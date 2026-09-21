@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <!-- Plain, uncoloured, and unpadded on purpose: MdcUtilsTest asserts on the
+       MDC block and logPrefix, RetryUtilsTest asserts on "LEVEL logger - msg". -->
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%date{"yyyy-MM-dd'T'HH:mm:ss.SSSXXX",UTC} [MDC:traceId=%mdc{dd.trace_id},spanId=%mdc{dd.span_id},user=%mdc{user},userId=%mdc{userId},companyId=%mdc{companyId},msgId=%mdc{msgId}] [%thread] %level %logger - %mdc{logPrefix}%msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="debug">
+    <appender-ref ref="CONSOLE"/>
+  </root>
+
+</configuration>

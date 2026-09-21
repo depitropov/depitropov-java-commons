@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <!-- @formatter:off -->
+      <Pattern>
+        %gray(%date{"yyyy-MM-dd'T'HH:mm:ss.SSSXXX",UTC}) [%highlight(%-5level)][%green(%-20.20t)][%yellow(%-50.50c{50})]%blue([MDC:user=%mdc{user},userId=%mdc{userId},companyId=%mdc{companyId},msgId=%mdc{msgId}]) %mdc{logPrefix}%msg%n
+      </Pattern>
+      <!-- @formatter:on -->
+    </layout>
+  </appender>
+
+  <root level="debug">
+    <appender-ref ref="CONSOLE"/>
+  </root>
+
+</configuration>

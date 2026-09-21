@@ -1,0 +1,7 @@
+{
+  "timestamp" : "2022-05-09T08:15:55.789Z",
+  "httpStatus" : 400,
+  "errorCode" : 4009999,
+  "errorMessage" : "BAD_REQUEST_GENERAL",
+  "errorDetails" : [ "error detail1", "error detail 2" ]
+}

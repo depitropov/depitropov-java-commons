@@ -1,0 +1,47 @@
+#!/bin/sh
+#
+# Pre-commit hook: auto-format staged Java files with Spotless.
+#
+# Runs `./mvnw spotless:apply`, then re-stages any staged Java files that
+# Spotless reformatted so the formatted version is what gets committed.
+
+# Collect staged Java files (Added/Copied/Modified/Renamed).
+staged_java=$(git diff --cached --name-only --diff-filter=ACMR -- '*.java')
+
+# Nothing to format -> let the commit proceed.
+if [ -z "$staged_java" ]; then
+    exit 0
+fi
+
+repo_root=$(git rev-parse --show-toplevel)
+cd "$repo_root" || exit 1
+
+if [ ! -x "./mvnw" ]; then
+    echo "pre-commit: ./mvnw not found or not executable; skipping Spotless." >&2
+    exit 0
+fi
+
+echo "pre-commit: running Spotless on staged Java files..."
+./mvnw -B spotless:apply
+status=$?
+
+if [ "$status" -ne 0 ]; then
+    echo "pre-commit: Spotless failed (exit $status). Aborting commit." >&2
+    exit "$status"
+fi
+
+# Re-stage only the previously-staged Java files (avoids accidentally
+# staging unrelated working-tree changes Spotless may have touched).
+# A here-doc keeps the loop in the parent shell so a failed `git add` aborts
+# the commit instead of being swallowed by a pipeline subshell.
+while IFS= read -r file; do
+    [ -n "$file" ] || continue
+    if [ -f "$file" ] && ! git add -- "$file"; then
+        echo "pre-commit: failed to re-stage '$file'. Aborting commit." >&2
+        exit 1
+    fi
+done <<EOF
+$staged_java
+EOF
+
+exit 0
